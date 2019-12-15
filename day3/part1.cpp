@@ -8,7 +8,7 @@ struct point {
 };
 
 struct hash_point {
-	size_t operator() (const point& p) const {
+	size_t operator ()(const point& p) const {
 		return std::hash<int>()(p.x) ^ std::hash<int>()(p.y);
 	}
 };
@@ -79,7 +79,7 @@ int main() {
 				__builtin_unreachable();
 		}
 	}
-	int closest = wirev1.size() + wirev2.size(), least = wirev1.size() + wirev2.size();
+	int closest = std::numeric_limits<int>::max(), least = std::numeric_limits<int>::max();
 	for (const auto& [pos, steps] : wirev1) {
 		if (wirev2.count(pos) != 0) {
 			closest = std::min(closest, std::abs(pos.x) + std::abs(pos.y));
