@@ -15,6 +15,9 @@ class program {
 public:
 	bool halt = false;
 	explicit program(const std::vector<int>& prog) : prog(prog) {}
+	i32& get_val(const i32 mode, const size_t ip) {
+		return mode == 1 ? prog[ip] : prog[prog[ip]];
+	}
 	i64 run(std::vector<i64> settings) {
 		u32 ip = 0;
 		i64 out = 0;
@@ -24,16 +27,19 @@ public:
 			int mode_2 = prog[ip] / 1000 % 10;
 			switch (prog[ip] % 100) {
 				case 1: {
-					prog[prog[ip + 3]] = prog[mode_1 == 1 ? ip + 1 : prog[ip + 1]] + prog[mode_2 == 1 ? ip + 2 : prog[ip + 2]];
+					prog[prog[ip + 3]]
+						= get_val(mode_1, ip + 1) + get_val(mode_2, ip + 2);
 					ip += 4;
 					break;
 				}
 				case 2: {
-					prog[prog[ip + 3]] = prog[mode_1 == 1 ? ip + 1 : prog[ip + 1]] * prog[mode_2 == 1 ? ip + 2 : prog[ip + 2]];
+					prog[prog[ip + 3]]
+						= get_val(mode_1, ip + 1) * get_val(mode_2, ip + 2);
 					ip += 4;
 					break;
 				}
 				case 3: {
+					std::cout << settings.size() << "\n";
 					if (settings.empty()) {
 						return out;
 					}
@@ -43,28 +49,28 @@ public:
 					break;
 				}
 				case 4: {
-					out = prog[mode_1 == 1 ? ip + 1 : prog[ip + 1]];
+					out = get_val(mode_1, ip + 1);
 					ip += 2;
 					break;
 				}
 				case 5: {
-					if (prog[mode_1 == 1 ? ip + 1 : prog[ip + 1]] != 0) {
-						ip = prog[mode_2 == 1 ? ip + 2 : prog[ip + 2]];
+					if (get_val(mode_1, ip + 1) != 0) {
+						ip = get_val(mode_2, ip + 2);
 					} else {
 						ip += 3;
 					}
 					break;
 				}
 				case 6: {
-					if (prog[mode_1 == 1 ? ip + 1 : prog[ip + 1]] == 0) {
-						ip = prog[mode_2 == 1 ? ip + 2 : prog[ip + 2]];
+					if (get_val(mode_1, ip + 1) == 0) {
+						ip = get_val(mode_2, ip + 2);
 					} else {
 						ip += 3;
 					}
 					break;
 				}
 				case 7: {
-					if (prog[mode_1 == 1 ? ip + 1 : prog[ip + 1]] < prog[mode_2 == 1 ? ip + 2 : prog[ip + 2]]) {
+					if (get_val(mode_1, ip + 1) < get_val(mode_2, ip + 2)) {
 						prog[prog[ip + 3]] = 1;
 					} else {
 						prog[prog[ip + 3]] = 0;
@@ -73,7 +79,7 @@ public:
 					break;
 				}
 				case 8: {
-					if (prog[mode_1 == 1 ? ip + 1 : prog[ip + 1]] == prog[mode_2 == 1 ? ip + 2 : prog[ip + 2]]) {
+					if (get_val(mode_1, ip + 1) == get_val(mode_2, ip + 2)) {
 						prog[prog[ip + 3]] = 1;
 					} else {
 						prog[prog[ip + 3]] = 0;
@@ -103,7 +109,7 @@ int main() {
 	for (int i = 0; i < 5; ++i) {
 		out = v[i].run({ amps[i], out });
 	}
-	while (!v[4].halt) {
+while (!v[4].halt) {
 		for (int i = 0; i < 5; ++i) {
 			out = v[i].run({ out });
 		}
