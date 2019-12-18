@@ -113,6 +113,6 @@ int main() {
 			out = v[i].run({ out });
 		}
 	}
-	std::cout << out << "\n";
+	std::cout << out;
 	return 0;
 }
