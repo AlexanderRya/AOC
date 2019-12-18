@@ -11,24 +11,24 @@ std::vector<std::array<i32, 5>> gen_combinations() {
 	return res;
 }
 class program {
+	u32 ip = 0;
 	std::vector<int> prog;
 public:
 	bool halt = false;
 	explicit program(const std::vector<int>& prog) : prog(prog) {}
-	i32& get_val(const i32 mode, const size_t ip) {
-		return mode == 1 ? prog[ip] : prog[prog[ip]];
+	i32& get_val(const i32 mode, const size_t i) {
+		return mode == 1 ? prog[i] : prog[prog[i]];
 	}
 	i64 run(std::vector<i64> settings) {
-		u32 ip = 0;
 		i64 out = 0;
-		int p = 0;
 		while (ip < prog.size()) {
+			//std::cout << prog[ip] % 100 << "\n";
 			int mode_1 = prog[ip] / 100 % 10;
 			int mode_2 = prog[ip] / 1000 % 10;
 			switch (prog[ip] % 100) {
 				case 1: {
 					prog[prog[ip + 3]]
-						= get_val(mode_1, ip + 1) + get_val(mode_2, ip + 2);
+							= get_val(mode_1, ip + 1) + get_val(mode_2, ip + 2);
 					ip += 4;
 					break;
 				}
@@ -101,18 +101,23 @@ int main() {
 	std::ifstream f("../day7/day7.txt");
 	std::vector<int> prog = util::split<int>(std::string{ std::istreambuf_iterator{ f }, {}}, ",");
 	std::vector<program> v(5, program(prog));
-	std::array<int, 5> amps{
-			9, 8, 7, 6, 5
-	};
-	i64 out = 0;
-	for (int i = 0; i < 5; ++i) {
-		out = v[i].run({ amps[i], out });
-	}
-	while (!v[4].halt) {
+	auto combinations = gen_combinations();
+	i64 max = 0;
+	for (const auto& amps : combinations) {
+		i64 out = 0;
 		for (int i = 0; i < 5; ++i) {
-			out = v[i].run({ out });
+			out = v[i].run({ out, amps[i] });
 		}
+		while (!v[4].halt) {
+			for (int i = 0; i < 5; ++i) {
+				out = v[i].run({ out });
+			}
+		}
+		if (max < out) {
+			max = out;
+		}
+		v = std::vector<program>(5, program(prog));
 	}
-	std::cout << out << "\n";
+	std::cout << max << "\n";
 	return 0;
 }
