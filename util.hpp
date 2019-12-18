@@ -411,9 +411,9 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 #elif defined(__clang__)
 	#if __has_attribute(__always_inline__)
 #define forceinline inline __attribute__((__always_inline__))
-#else
+	#else
 #define forceinline inline
-#endif // __CLANG__
+	#endif // __CLANG__
 #else
 #define forceinline inline
 #endif // _MSC_VER
@@ -444,7 +444,6 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 			return *this;
 		}
 	};
-
 	inline struct helper {
 		template <typename Ty>
 		ccout_t operator <<(const Ty& elem) const {
@@ -505,7 +504,6 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 	void print(Ts&& ...Args) {
 		((std::cout << std::forward<Ts>(Args)), ...);
 	}
-
 	template <typename = void>
 	inline auto split(const std::string& s, const std::string& delimiter) {
 		size_t pos_start = 0, pos_end, delim_len = delimiter.length();
@@ -518,7 +516,6 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 		res.emplace_back(s.substr(pos_start));
 		return res;
 	}
-
 	template <>
 	inline auto split<int>(const std::string& s, const std::string& delimiter) {
 		size_t pos_start = 0, pos_end, delim_len = delimiter.length();
@@ -531,7 +528,6 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 		res.emplace_back(std::stoi(s.substr(pos_start)));
 		return res;
 	}
-
 	inline void replace(std::string& _Str, const char* const _Oldval, const char* const _Newval) {
 		const auto old_len = strlen(_Oldval);
 		const auto new_len = strlen(_Newval);
@@ -544,23 +540,19 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 				pos_start = pos_end - new_len + old_len - 1;
 		}
 	}
-
 	template <typename Obj>
 	constexpr auto make_object() {
 		static_assert(std::is_default_constructible_v<Obj>, "Object is not default constructible");
 		return Obj{};
 	}
-
 	template <typename Obj, typename ...Args>
 	constexpr auto make_object(Args&& ...args) {
 		return Obj(std::forward<Args>(args)...);
 	}
-
 	template <typename Obj, typename Ty>
 	constexpr auto make_object(const std::initializer_list<Ty>& List) {
 		return Obj{ List };
 	}
-
 	inline void add_space(std::string& str) {
 		for (auto i = 0u; i < str.size(); i++) {
 			if (str[i + 1] == ' ') {
@@ -570,7 +562,6 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 			str.insert(str.begin() + ++i, ' ');
 		}
 	}
-
 	inline auto add_space(std::string&& str) {
 		auto temp(std::move(str));
 		for (auto i = 0u; i < temp.size(); i++) {
@@ -604,18 +595,20 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 		oss << str.substr(startidx, str.length());
 		return oss.str();
 	}
-	template<typename Ty, typename = void>
+	template <typename Ty, typename = void>
 	struct has_extraction_operator : std::false_type {};
-	template<typename Ty>
+	template <typename Ty>
 	struct has_extraction_operator<Ty,
 			std::void_t<decltype(std::declval<std::istream&>() >> std::declval<Ty&>())>> :
-			std::true_type {};
-	template<typename Ty, typename = void>
+			std::true_type {
+	};
+	template <typename Ty, typename = void>
 	struct has_insertion_operator : std::false_type {};
-	template<typename Ty>
+	template <typename Ty>
 	struct has_insertion_operator<Ty,
 			std::void_t<decltype(std::declval<std::ostream&>() << std::declval<Ty>())>> :
-			std::true_type {};
+			std::true_type {
+	};
 	template <typename Ty, typename Ety>
 	std::optional<Ty> extract(Ety& ex) {
 		static_assert(has_extraction_operator<Ty>(), "Error, impossible to extract from 'Ty'");
@@ -671,9 +664,9 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 	template <> struct E<0> { typedef Frac<1, 1> result; };
 	template <int N> struct Integer { constexpr static int val = N; };
 // Trait for detecting STL and STL-Like containers
-	template<typename Tx, typename = void>
+	template <typename Tx, typename = void>
 	struct is_container : std::false_type {};
-	template<typename Tx>
+	template <typename Tx>
 	struct is_container<Tx,
 			std::void_t<typename Tx::value_type,
 					typename Tx::iterator,
@@ -683,8 +676,9 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 					decltype(std::declval<Tx>().end()),
 					decltype(std::declval<Tx>().cbegin()),
 					decltype(std::declval<Tx>().cend())>> :
-			std::true_type {};
-	template<class Ty, class... Types>
+			std::true_type {
+	};
+	template <class Ty, class... Types>
 	constexpr bool is_any_of_v = std::disjunction_v<std::is_same<Ty, Types>...>;
 } // namespace util
 using util::u8;

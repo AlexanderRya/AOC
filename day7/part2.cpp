@@ -39,7 +39,6 @@ public:
 					break;
 				}
 				case 3: {
-					std::cout << settings.size() << "\n";
 					if (settings.empty()) {
 						return out;
 					}
@@ -92,7 +91,7 @@ public:
 					return out;
 				}
 				default:
-					__builtin_unreachable();
+					std::cout << "Error, unknown opcode";
 			}
 		}
 		return out;
@@ -100,16 +99,16 @@ public:
 };
 int main() {
 	std::ifstream f("../day7/day7.txt");
-	std::vector<int> prog = util::split<int>(std::string{ std::istreambuf_iterator{ f }, {} }, ",");
+	std::vector<int> prog = util::split<int>(std::string{ std::istreambuf_iterator{ f }, {}}, ",");
 	std::vector<program> v(5, program(prog));
 	std::array<int, 5> amps{
-		9, 8, 7, 6, 5
+			9, 8, 7, 6, 5
 	};
 	i64 out = 0;
 	for (int i = 0; i < 5; ++i) {
 		out = v[i].run({ amps[i], out });
 	}
-while (!v[4].halt) {
+	while (!v[4].halt) {
 		for (int i = 0; i < 5; ++i) {
 			out = v[i].run({ out });
 		}

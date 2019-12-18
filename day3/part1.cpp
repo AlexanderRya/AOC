@@ -6,17 +6,15 @@ struct point {
 		return x == rhs.x && y == rhs.y;
 	}
 };
-
 struct hash_point {
 	size_t operator ()(const point& p) const {
 		return std::hash<int>()(p.x) ^ std::hash<int>()(p.y);
 	}
 };
-
 int main() {
 	std::ifstream f("../day3/day3.txt");
 	std::vector<std::tuple<char, int>> wire1, wire2;
-	auto wires = util::split(std::string{ std::istreambuf_iterator<char>{ f }, {} }, "\n");
+	auto wires = util::split(std::string{ std::istreambuf_iterator<char>{ f }, {}}, "\n");
 	for (const auto& wire : util::split(wires[0], ",")) {
 		wire1.emplace_back(wire[0], std::stoi(std::string{ wire.begin() + 1, wire.end() }));
 	}
@@ -26,7 +24,7 @@ int main() {
 	std::unordered_map<point, int, hash_point> wirev1, wirev2;
 	point p1{}, p2{};
 	int steps = 0;
-	for (const auto& [dir, length] : wire1) {
+	for (const auto&[dir, length] : wire1) {
 		switch (dir) {
 			case 'R':
 				for (int i = 0; i < length; ++i) {
@@ -53,7 +51,7 @@ int main() {
 		}
 	}
 	steps = 0;
-	for (const auto& [dir, length] : wire2) {
+	for (const auto&[dir, length] : wire2) {
 		switch (dir) {
 			case 'R':
 				for (int i = 0; i < length; ++i) {
@@ -80,7 +78,7 @@ int main() {
 		}
 	}
 	int closest = std::numeric_limits<int>::max(), least = std::numeric_limits<int>::max();
-	for (const auto& [pos, steps] : wirev1) {
+	for (const auto&[pos, steps] : wirev1) {
 		if (wirev2.count(pos) != 0) {
 			closest = std::min(closest, std::abs(pos.x) + std::abs(pos.y));
 			least = std::min(least, wirev1[pos] + wirev2[pos]);

@@ -2,7 +2,7 @@
 
 int main() {
 	std::ifstream f("../day2/day2.txt");
-	std::vector<int> orig_prog = util::split<int>(std::string{ std::istreambuf_iterator<char>{ f }, {} }, ",");
+	std::vector<int> orig_prog = util::split<int>(std::string{ std::istreambuf_iterator<char>{ f }, {}}, ",");
 	auto prog = orig_prog;
 	for (int i = 0; i < 99; ++i) {
 		for (int j = 0; j < 99; ++j) {
