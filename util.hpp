@@ -90,6 +90,8 @@ namespace util {
 	using i64 = int64_t;
 	using f32 = float;
 	using f64 = double;
+	using usize = size_t;
+	using isize = ssize_t;
 // START class dyn_array
 	template <typename Ty, class Al = std::allocator<Ty>>
 	class dyn_array {
@@ -517,15 +519,39 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 		return res;
 	}
 	template <>
-	inline auto split<int>(const std::string& s, const std::string& delimiter) {
+	inline auto split<i32>(const std::string& s, const std::string& delimiter) {
 		size_t pos_start = 0, pos_end, delim_len = delimiter.length();
-		std::vector<int> res;
+		std::vector<i32> res;
 		while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
 			auto token = s.substr(pos_start, pos_end - pos_start);
 			pos_start = pos_end + delim_len;
 			res.emplace_back(std::stoi(token));
 		}
 		res.emplace_back(std::stoi(s.substr(pos_start)));
+		return res;
+	}
+	template <>
+	inline auto split<i64>(const std::string& s, const std::string& delimiter) {
+		size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+		std::vector<i64> res;
+		while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
+			auto token = s.substr(pos_start, pos_end - pos_start);
+			pos_start = pos_end + delim_len;
+			res.emplace_back(std::stoll(token));
+		}
+		res.emplace_back(std::stoll(s.substr(pos_start)));
+		return res;
+	}
+	template <>
+	inline auto split<u64>(const std::string& s, const std::string& delimiter) {
+		size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+		std::vector<u64> res;
+		while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
+			auto token = s.substr(pos_start, pos_end - pos_start);
+			pos_start = pos_end + delim_len;
+			res.emplace_back(std::stoull(token));
+		}
+		res.emplace_back(std::stoull(s.substr(pos_start)));
 		return res;
 	}
 	inline void replace(std::string& _Str, const char* const _Oldval, const char* const _Newval) {
@@ -691,6 +717,8 @@ using util::i32;
 using util::i64;
 using util::f32;
 using util::f64;
+using util::usize;
+using util::isize;
 using util::operator <<;
 struct Nil {
 	using Head = Nil;
