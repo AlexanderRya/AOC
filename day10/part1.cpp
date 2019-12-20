@@ -5,7 +5,7 @@ struct point {
 };
 int main() {
 	std::ifstream f("../day10/day10.txt");
-	std::vector<std::string> map = util::split(std::string{ std::istreambuf_iterator{ f }, {}}, "\n");
+	std::vector<std::string> map = util::split(std::string{ std::istreambuf_iterator{ f }, {} }, "\n");
 	std::vector<point> asteroids;
 	point p{};
 	for (const auto& line : map) {
@@ -19,9 +19,9 @@ int main() {
 		p.x = 0;
 	}
 	auto max = 0;
-	for (const auto&[x, y] : asteroids) {
+	for (const auto& [x, y] : asteroids) {
 		auto current = 0;
-		for (const auto&[sx, sy] : asteroids) {
+		for (const auto& [sx, sy] : asteroids) {
 			if (x == sx && y == sy) {
 				continue;
 			}
