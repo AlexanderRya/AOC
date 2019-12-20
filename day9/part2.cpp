@@ -169,6 +169,6 @@ int main() {
 	std::ifstream f("../day9/day9.txt");
 	std::vector<i64> prog = util::split<i64>(std::string{ std::istreambuf_iterator{ f }, {}}, ",");
 	prog.resize(20000, 0);
-	program(prog).run({ 1 });
+	program(prog).run({ 2 });
 	return 0;
 }
