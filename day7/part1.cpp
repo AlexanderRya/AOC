@@ -19,7 +19,7 @@ int main() {
 		i32 out = 0;
 		for (int i = 0; i < 5; ++i) {
 			std::stack<i32> settings{
-					{ out, amps[i] }
+				{ out, amps[i] }
 			};
 			u32 ip = 0;
 			auto op_code = (prog[ip] % 10) + (((prog[ip] / 10) % 10) * 10);

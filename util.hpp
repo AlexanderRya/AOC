@@ -604,10 +604,10 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 		if (std::count_if(str.begin(), str.end(), [](const char elem) {
 			return elem == '%';
 		}) != sizeof...(args)) {
-			std::cout << "[Error] invalid number of arguments passed inside std::format\n";
+			std::cout << "[Error] invalid number of arguments passed inside util::format\n";
 			assert(false);
 		}
-		auto intfmt = [](const std::string& istr, std::stringstream& oss, size_t& startidx, const auto& var) {
+		auto intfmt = [](const std::string& istr, std::stringstream& oss, size_t& startidx, const auto var) {
 			size_t index = istr.find('%', startidx);
 			if (index == std::string::npos) {
 				return;
@@ -616,7 +616,7 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 			startidx = index + 1;
 		};
 		std::stringstream oss;
-		int startidx = 0;
+		size_t startidx = 0;
 		(intfmt(str, oss, startidx, std::forward<Args>(args)), ...);
 		oss << str.substr(startidx, str.length());
 		return oss.str();
@@ -625,15 +625,15 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 	struct has_extraction_operator : std::false_type {};
 	template <typename Ty>
 	struct has_extraction_operator<Ty,
-			std::void_t<decltype(std::declval<std::istream&>() >> std::declval<Ty&>())>> :
-			std::true_type {
+		std::void_t<decltype(std::declval<std::istream&>() >> std::declval<Ty&>())>> :
+		std::true_type {
 	};
 	template <typename Ty, typename = void>
 	struct has_insertion_operator : std::false_type {};
 	template <typename Ty>
 	struct has_insertion_operator<Ty,
-			std::void_t<decltype(std::declval<std::ostream&>() << std::declval<Ty>())>> :
-			std::true_type {
+		std::void_t<decltype(std::declval<std::ostream&>() << std::declval<Ty>())>> :
+		std::true_type {
 	};
 	template <typename Ty, typename Ety>
 	std::optional<Ty> extract(Ety& ex) {
@@ -694,15 +694,15 @@ Ty random(const Ty Min = std::numeric_limits<Ty>::min(), const Ty Max = std::num
 	struct is_container : std::false_type {};
 	template <typename Tx>
 	struct is_container<Tx,
-			std::void_t<typename Tx::value_type,
-					typename Tx::iterator,
-					typename Tx::const_iterator,
-					decltype(std::declval<Tx>().size()),
-					decltype(std::declval<Tx>().begin()),
-					decltype(std::declval<Tx>().end()),
-					decltype(std::declval<Tx>().cbegin()),
-					decltype(std::declval<Tx>().cend())>> :
-			std::true_type {
+		std::void_t<typename Tx::value_type,
+			typename Tx::iterator,
+			typename Tx::const_iterator,
+			decltype(std::declval<Tx>().size()),
+			decltype(std::declval<Tx>().begin()),
+			decltype(std::declval<Tx>().end()),
+			decltype(std::declval<Tx>().cbegin()),
+			decltype(std::declval<Tx>().cend())>> :
+		std::true_type {
 	};
 	template <class Ty, class... Types>
 	constexpr bool is_any_of_v = std::disjunction_v<std::is_same<Ty, Types>...>;
@@ -744,7 +744,7 @@ template <> struct append<> : tag<values<>> {};
 template <int... Xs> struct append<values<Xs...>> : tag<values<Xs...>> {};
 template <int... Lhs, int... Rhs, class... Vs>
 struct append<values<Lhs...>, values<Rhs...>, Vs...> :
-		tag<append_t<values<Lhs..., Rhs...>, Vs...>> {
+	tag<append_t<values<Lhs..., Rhs...>, Vs...>> {
 };
 template <int...Lhs>
 constexpr values<Lhs...> simple_merge(values<Lhs...>, values<>) { return {}; }
@@ -754,9 +754,9 @@ constexpr values<> simple_merge(values<>, values<>) { return {}; }
 template <int L0, int...Lhs, int R0, int...Rhs>
 constexpr auto simple_merge(values<L0, Lhs...>, values<R0, Rhs...>)
 -> std::conditional_t<
-		(R0 < L0),
-		append_t<values<R0>, decltype(simple_merge(values<L0, Lhs...>{}, values<Rhs...>{}))>,
-		append_t<values<L0>, decltype(simple_merge(values<Lhs...>{}, values<R0, Rhs...>{}))>> {
+	(R0 < L0),
+	append_t<values<R0>, decltype(simple_merge(values<L0, Lhs...>{}, values<Rhs...>{}))>,
+	append_t<values<L0>, decltype(simple_merge(values<Lhs...>{}, values<R0, Rhs...>{}))>> {
 	return {};
 }
 template <class Lhs, class Rhs>
@@ -832,8 +832,8 @@ constexpr std::conditional_t<(X0 < P), values<X0>, values<>> lower_split(int_t<P
 template <int P, int X0, int X1, int... Xs>
 constexpr auto lower_split(int_t<P>, values<X0, X1, Xs...>)
 -> append_t<
-		decltype(lower_split(int_v<P>, front_half_v<values<X0, X1, Xs...>>)),
-		decltype(lower_split(int_v<P>, back_half_v<values<X0, X1, Xs...>>))
+	decltype(lower_split(int_v<P>, front_half_v<values<X0, X1, Xs...>>)),
+	decltype(lower_split(int_v<P>, back_half_v<values<X0, X1, Xs...>>))
 > {
 	return {};
 }
@@ -849,7 +849,7 @@ template <int P, int X0>
 constexpr std::conditional_t<(X0 == P), values<X0>, values<> > middle_split(int_t<P>, values<X0>) { return {}; }
 template <int P, int X0, int X1, int... Xs>
 constexpr auto middle_split(int_t<P>, values<X0, X1, Xs...>) -> append_t<decltype(middle_split(int_v<P>, front_half_v<values<X0, X1, Xs...>>)),
-		decltype(middle_split(int_v<P>, back_half_v<values<X0, X1, Xs...>>))> { return {}; }
+	decltype(middle_split(int_v<P>, back_half_v<values<X0, X1, Xs...>>))> { return {}; }
 template <class Values>
 using lower_split_t = decltype(lower_split(pivot_v<Values>, Values{}));
 template <class Values> constexpr lower_split_t<Values> lower_split_v = {};
